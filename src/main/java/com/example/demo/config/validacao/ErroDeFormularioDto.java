@@ -1,23 +1,20 @@
 package com.example.demo.config.validacao;
 
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Data
 public class ErroDeFormularioDto {
-	
-	private String statusCode;
+
+	private Integer code;
 	private String message;
-	
-	public ErroDeFormularioDto(String statusCode, String message) {
-		this.statusCode = statusCode;
+
+	public ErroDeFormularioDto(Integer code, String message) {
+		this.code = code;
 		this.message = message;
 	}
 
-	public String getStatusCode() {
-		return statusCode;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-	
-	
 
 }
+

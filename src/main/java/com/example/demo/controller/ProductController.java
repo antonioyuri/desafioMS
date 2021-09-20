@@ -3,13 +3,15 @@ package com.example.demo.controller;
 import java.util.List;
 import java.util.Optional;
 
+import com.example.demo.dto.ProductRequestDTO;
+import com.example.demo.dto.ProductResponseDTO;
 import com.example.demo.form.BuscaProductForm;
 import com.example.demo.model.Product;
-import com.example.demo.repository.ProductRepository;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
+import com.example.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,58 +25,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/products")
+@RequestMapping("/product")
 public class ProductController {
 
+	@Autowired
+	ProductService productService;
 
-    @Autowired
-    ProductRepository productRepository;
-
-    @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody @Valid Product product) {
-            Product newProduct = productRepository.save(product);
-            return ResponseEntity.ok().body(newProduct);       
-    }
+	@PostMapping
+	public ResponseEntity<ProductResponseDTO> createProduct(@RequestBody @Valid ProductRequestDTO productRequestDTO) {
+		return productService.salvar(productRequestDTO);
+	}
 
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<Product> updateProduct(@PathVariable String id, @RequestBody @Valid Product product) {
-		Optional<Product> optional = productRepository.findById(id);
-		if (optional.isPresent()) {
-			Product produtoAtualizado = product.convertProduct(id, optional.get());
-			return ResponseEntity.ok().body(produtoAtualizado);
-		}		
-		return ResponseEntity.notFound().build();			
+	public ResponseEntity<ProductResponseDTO> updateProduct(@PathVariable String id, @RequestBody @Valid ProductRequestDTO product) {
+		return productService.atualizarProduto(id,product);
 	}
 
 	@GetMapping("/{id}")
-    public ResponseEntity<Product> listProductById(@PathVariable String id) {           
-		Optional<Product> optional = productRepository.findById(id);
-		if (optional.isPresent()) {			
-			return ResponseEntity.ok().body(optional.get());
-		}		
-		return ResponseEntity.notFound().build();			     
-    }
+	public ResponseEntity<ProductResponseDTO> listProductById(@PathVariable String id) {
+		return productService.buscarPorId(id);
+	}
 
 	@GetMapping
-    public List<Product> listProduct() {           
-            return productRepository.findAll();       
-    }
+	public List<ProductResponseDTO> listProduct() {
+		return productService.buscarTodos();
+	}
 
-	@GetMapping("/search") 
-    public List<Product> searchProduct(BuscaProductForm buscaProductForm) {
-		return  productRepository.findAll(buscaProductForm.toSpec());
-    }
+	@GetMapping("/search")
+	public List<ProductResponseDTO> searchProduct(BuscaProductForm buscaProductForm) {
+		return  productService.buscarTodosFiltros(buscaProductForm.toSpec());
+	}
 
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<Product> deleteProduct(@PathVariable String id) {
-		Optional<Product> optional = productRepository.findById(id);
-		if (optional.isPresent()) {
-			productRepository.deleteById(id);
-			return ResponseEntity.status(HttpStatus.OK).build();
-		}		
-		return ResponseEntity.notFound().build();			
+	public ResponseEntity<Object> deleteProduct(@PathVariable String id) {
+		return productService.remover(id);
 	}
 
 }

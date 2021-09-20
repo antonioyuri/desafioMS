@@ -16,7 +16,7 @@ public class BuscaProductForm {
     private String q;
     private String min_price;
     private String max_price;
-   
+
     public BuscaProductForm(String q, String min_price, String max_price) {
         this.q = q;
         this.min_price = min_price;
@@ -46,39 +46,39 @@ public class BuscaProductForm {
     public void setMax_price(String max_price) {
         this.max_price = max_price;
     }
-    
+
     public Specification<Product> toSpec(){
         return (root,query,builder)->{
-                        
-            List<Predicate> predicados = new ArrayList<>();
+
+            List<Predicate> predicates = new ArrayList<>();
 
             if(StringUtils.hasText(q)){
 
-                Path<String>campoNome = root.get("name");        
-                Path<String>campoDesc = root.get("description");                
+                Path<String>campoNome = root.get("name");
+                Path<String>campoDesc = root.get("description");
 
-                Predicate predicadoNome = builder.or(builder.equal(campoNome,q), builder.equal(campoDesc,q));                
-                predicados.add(predicadoNome);
-                
+                Predicate predicateNome = builder.or(builder.like(campoNome,q), builder.like(campoDesc,q));
+                predicates.add(predicateNome);
+
             }
 
             if(StringUtils.hasText(min_price)){
-                
-                Path<String>minPrice = root.get("price");                        
-                Predicate predicadoMinPrice = builder.greaterThanOrEqualTo(minPrice, min_price);
-                predicados.add(predicadoMinPrice);                
-            }
-            
-            if(StringUtils.hasText(max_price)){
-                
-                Path<String>maxPrice = root.get("price");                        
-                Predicate predicadoMaxPrice = builder.lessThanOrEqualTo(maxPrice, max_price);
-                predicados.add(predicadoMaxPrice);                
+
+                Path<String>minPrice = root.get("price");
+                Predicate predicateMinPrice = builder.greaterThanOrEqualTo(minPrice, min_price);
+                predicates.add(predicateMinPrice);
             }
 
-            return builder.and(predicados.toArray(new Predicate[0]));
+            if(StringUtils.hasText(max_price)){
+
+                Path<String>maxPrice = root.get("price");
+                Predicate predicateMaxPrice = builder.lessThanOrEqualTo(maxPrice, max_price);
+                predicates.add(predicateMaxPrice);
+            }
+
+            return builder.and(predicates.toArray(new Predicate[0]));
 
         };
     }
-    
+
 }
