@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.dto.ProductRequestDTO;
 import com.example.demo.dto.ProductResponseDTO;
+import com.example.demo.form.BuscaProductSpecification;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ProductService {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    BuscaProductSpecification buscaProductSpecification;
 
     public ResponseEntity<ProductResponseDTO> salvar (ProductRequestDTO productRequestDTO){
         ProductResponseDTO newProduct = new ProductResponseDTO(productRepository.save(productRequestDTO.build()));
@@ -43,7 +47,8 @@ public class ProductService {
         return listaRetorno;
     }
 
-    public List<ProductResponseDTO> buscarTodosFiltros(Specification<Product> productSpecification){
+    public List<ProductResponseDTO> buscarTodosFiltros(String q,String min_price,String max_price){
+        Specification<Product> productSpecification = buscaProductSpecification.toSpec(q, min_price, max_price);
         List<Product> listaProduc = productRepository.findAll(productSpecification);
         List<ProductResponseDTO> listaRetorno = new ArrayList<>();
         for(Product product:listaProduc){

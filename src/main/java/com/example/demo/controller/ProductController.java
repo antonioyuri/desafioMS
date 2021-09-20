@@ -1,19 +1,16 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.example.demo.dto.ProductRequestDTO;
 import com.example.demo.dto.ProductResponseDTO;
-import com.example.demo.form.BuscaProductForm;
-import com.example.demo.model.Product;
+import com.example.demo.form.BuscaProductSpecification;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import com.example.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,8 +50,8 @@ public class ProductController {
 	}
 
 	@GetMapping("/search")
-	public List<ProductResponseDTO> searchProduct(BuscaProductForm buscaProductForm) {
-		return  productService.buscarTodosFiltros(buscaProductForm.toSpec());
+	public List<ProductResponseDTO> searchProduct(String q,String min_price,String max_price) {
+		return  productService.buscarTodosFiltros(q,min_price,max_price);
 	}
 
 	@DeleteMapping("/{id}")
