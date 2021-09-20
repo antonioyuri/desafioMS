@@ -47,7 +47,7 @@ public class ProductService {
         return listaRetorno;
     }
 
-    public List<ProductResponseDTO> buscarTodosFiltros(String q,String min_price,String max_price){
+    public List<ProductResponseDTO> buscarTodosFiltros(String q, String min_price, String max_price){
         Specification<Product> productSpecification = buscaProductSpecification.toSpec(q, min_price, max_price);
         List<Product> listaProduc = productRepository.findAll(productSpecification);
         List<ProductResponseDTO> listaRetorno = new ArrayList<>();

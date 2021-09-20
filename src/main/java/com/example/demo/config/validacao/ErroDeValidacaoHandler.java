@@ -12,10 +12,20 @@ public class ErroDeValidacaoHandler {
 
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(value =  TransactionSystemException.class)
-	public  ErroDeFormularioDto handle(TransactionSystemException exception) {
+	public  ErroDeFormularioDto handleTrasaction(TransactionSystemException exception) {
 		ErroDeFormularioDto dto = new ErroDeFormularioDto();
 		dto.setMessage("Erro na operação");
 		dto.setCode(HttpStatus.NOT_FOUND.value());
 		return  dto;
 	}
+
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(value =  NumberFormatException.class)
+	public  ErroDeFormularioDto handleNumber(NumberFormatException exception) {
+		ErroDeFormularioDto dto = new ErroDeFormularioDto();
+		dto.setMessage("Erro na operação");
+		dto.setCode(HttpStatus.NOT_FOUND.value());
+		return  dto;
+	}
+
 }

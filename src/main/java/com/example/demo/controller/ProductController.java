@@ -12,14 +12,8 @@ import javax.validation.Valid;
 import com.example.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/product")
@@ -50,7 +44,7 @@ public class ProductController {
 	}
 
 	@GetMapping("/search")
-	public List<ProductResponseDTO> searchProduct(String q,String min_price,String max_price) {
+	public List<ProductResponseDTO> searchProduct(@RequestParam @Nullable String q, @RequestParam @Nullable String min_price, @RequestParam @Nullable String max_price) {
 		return  productService.buscarTodosFiltros(q,min_price,max_price);
 	}
 
