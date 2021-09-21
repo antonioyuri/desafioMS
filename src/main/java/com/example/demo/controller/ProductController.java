@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.example.demo.dto.ProductRequestDTO;
 import com.example.demo.dto.ProductResponseDTO;
-import com.example.demo.form.BuscaProductSpecification;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -16,7 +15,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
 
 	@Autowired
@@ -44,8 +43,8 @@ public class ProductController {
 	}
 
 	@GetMapping("/search")
-	public List<ProductResponseDTO> searchProduct(@RequestParam @Nullable String q, @RequestParam @Nullable String min_price, @RequestParam @Nullable String max_price) {
-		return  productService.buscarTodosFiltros(q,min_price,max_price);
+	public List<ProductResponseDTO> searchProduct(@RequestParam @Nullable String q, @RequestParam (name="min_price") @Nullable String minPrice, @RequestParam (name="max_price") @Nullable String maxPrice) {
+		return  productService.buscarTodosFiltros(q,minPrice,maxPrice);
 	}
 
 	@DeleteMapping("/{id}")

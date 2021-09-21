@@ -5,6 +5,7 @@ import com.example.demo.dto.ProductResponseDTO;
 import com.example.demo.form.BuscaProductSpecification;
 import com.example.demo.model.Product;
 import com.example.demo.repository.ProductRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -24,15 +25,18 @@ public class ProductService {
     @Autowired
     BuscaProductSpecification buscaProductSpecification;
 
+    @Autowired
+    ModelMapper modelMapper;
+
     public ResponseEntity<ProductResponseDTO> salvar (ProductRequestDTO productRequestDTO){
-        ProductResponseDTO newProduct = new ProductResponseDTO(productRepository.save(productRequestDTO.build()));
+        ProductResponseDTO newProduct = modelMapper.map(productRepository.save(productRequestDTO.build()),ProductResponseDTO.class);
         return ResponseEntity.status(HttpStatus.CREATED).body(newProduct);
     }
 
     public ResponseEntity<ProductResponseDTO> buscarPorId(String id){
         Optional<Product> optional = productRepository.findById(id);
         if (optional.isPresent()) {
-            ProductResponseDTO newProduct = new ProductResponseDTO(optional.get());
+            ProductResponseDTO newProduct = modelMapper.map(optional.get(),ProductResponseDTO.class);
             return ResponseEntity.ok().body(newProduct);
         }
         return ResponseEntity.notFound().build();
@@ -47,8 +51,8 @@ public class ProductService {
         return listaRetorno;
     }
 
-    public List<ProductResponseDTO> buscarTodosFiltros(String q, String min_price, String max_price){
-        Specification<Product> productSpecification = buscaProductSpecification.toSpec(q, min_price, max_price);
+    public List<ProductResponseDTO> buscarTodosFiltros(String q, String minPrice, String maxPrice){
+        Specification<Product> productSpecification = buscaProductSpecification.toSpec(q, minPrice, maxPrice);
         List<Product> listaProduc = productRepository.findAll(productSpecification);
         List<ProductResponseDTO> listaRetorno = new ArrayList<>();
         for(Product product:listaProduc){
@@ -67,14 +71,15 @@ public class ProductService {
     }
 
     public ResponseEntity<ProductResponseDTO> atualizarProduto(String id, ProductRequestDTO product){
-        Optional<Product> optional = productRepository.findById(id);
-        if (optional.isPresent()) {
-            Product productActualized = product.convertProduct(id, optional.get());
-            ProductResponseDTO newProduct = new ProductResponseDTO(productActualized);
-            return ResponseEntity.ok().body(newProduct);
-        }
-        return ResponseEntity.notFound().build();
+        return productRepository.findById(id)
+                .map(record -> {
+                    record.setName(product.getName());
+                    record.setDescription(product.getDescription());
+                    record.setPrice(product.getPrice());
+                    record.setId(id);
+                    Product productSave = productRepository.save(record);
+                    ProductResponseDTO newProduct = modelMapper.map(productSave,ProductResponseDTO.class);
+                    return ResponseEntity.ok().body(newProduct);
+                }).orElse(ResponseEntity.notFound().build());
     }
-
-
 }

@@ -15,7 +15,7 @@ public class ErroDeValidacaoHandler {
 	public  ErroDeFormularioDto handleTrasaction(TransactionSystemException exception) {
 		ErroDeFormularioDto dto = new ErroDeFormularioDto();
 		dto.setMessage("Erro na operação");
-		dto.setCode(HttpStatus.NOT_FOUND.value());
+		dto.setStatus_code(HttpStatus.BAD_REQUEST.value());
 		return  dto;
 	}
 
@@ -24,7 +24,7 @@ public class ErroDeValidacaoHandler {
 	public  ErroDeFormularioDto handleNumber(NumberFormatException exception) {
 		ErroDeFormularioDto dto = new ErroDeFormularioDto();
 		dto.setMessage("Erro na operação");
-		dto.setCode(HttpStatus.NOT_FOUND.value());
+		dto.setStatus_code(HttpStatus.BAD_REQUEST.value());
 		return  dto;
 	}
 

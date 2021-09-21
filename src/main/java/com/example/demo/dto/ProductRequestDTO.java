@@ -20,7 +20,4 @@ public class ProductRequestDTO {
         return product;
     }
 
-    public Product convertProduct(String id, Product product) {
-        return null;
-    }
 }

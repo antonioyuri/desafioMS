@@ -15,7 +15,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class BuscaProductSpecification {
 
-    public Specification<Product> toSpec(String q,String min_price,String max_price ){
+    public Specification<Product> toSpec(String q,String minPrice,String maxPrice ){
         return (root,query,builder)->{
 
             List<Predicate> predicates = new ArrayList<>();
@@ -25,22 +25,22 @@ public class BuscaProductSpecification {
                 Path<String>campoNome = root.get("name");
                 Path<String>campoDesc = root.get("description");
 
-                Predicate predicateNome = builder.or(builder.like(campoNome,q), builder.like(campoDesc,q));
+                Predicate predicateNome = builder.or(builder.like(builder.lower(campoNome),"%"+q.toLowerCase()+"%"), builder.like(builder.lower(campoDesc),"%"+q.toLowerCase()+"%"));
                 predicates.add(predicateNome);
 
             }
 
-            if(StringUtils.hasText(min_price)){
+            if(StringUtils.hasText(minPrice)){
 
-                Path<String>minPrice = root.get("price");
-                Predicate predicateMinPrice = builder.greaterThanOrEqualTo(minPrice, min_price);
+                Path<String>minPricePath = root.get("price");
+                Predicate predicateMinPrice = builder.greaterThanOrEqualTo(minPricePath, minPrice);
                 predicates.add(predicateMinPrice);
             }
 
-            if(StringUtils.hasText(max_price)){
+            if(StringUtils.hasText(maxPrice)){
 
-                Path<String>maxPrice = root.get("price");
-                Predicate predicateMaxPrice = builder.lessThanOrEqualTo(maxPrice, max_price);
+                Path<String>maxPricePath = root.get("price");
+                Predicate predicateMaxPrice = builder.lessThanOrEqualTo(maxPricePath, maxPrice);
                 predicates.add(predicateMaxPrice);
             }
 

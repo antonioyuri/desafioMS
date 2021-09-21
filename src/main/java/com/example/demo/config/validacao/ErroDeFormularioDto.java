@@ -7,14 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class ErroDeFormularioDto {
 
-	private Integer code;
+	private Integer status_code;
 	private String message;
-
-	public ErroDeFormularioDto(Integer code, String message) {
-		this.code = code;
-		this.message = message;
-	}
-
 
 }
 
